@@ -1,7 +1,5 @@
 /.idea/
 *~
 \#*\#
-/project/target/
+/project/
 /target/
-/src/main/resources/
-
