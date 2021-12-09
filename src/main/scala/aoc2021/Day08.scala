@@ -54,7 +54,6 @@ object Day08 extends App {
     //println(decoders)
     four.split(" ")
       .map(str => { val index = str.split("").sorted.mkString("")
-        //println(s"index is $index")
         decoders(index)}).mkString("").toInt
   }).sum
   println(s"part2: $part2")
