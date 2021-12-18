@@ -26,28 +26,29 @@ object Day12 extends App {
     println(s"caves $caves")
     val tp = "(.*) & (\\d+)".r
 
-    def findEnd(currentNode: String, nodes: Set[String], road: List[(String, String)], roads: List[String], trace: String): List[String] = {
-      val tp(tr,ind) = trace
-      val index = ind.toInt
-      //println(s"$tr,$index size ${roads.size}  current $currentNode + $nodes\n and roads ${roads.mkString("\n")}")
-      if (nodes.isEmpty) {/* println(s"out $trace & $index and roads: ${roads.mkString("\n")}");*/ roads}
+    def findEnd(currentNode: String, nodes: Set[String]
+                , road: List[(String, String)], roads: List[String], smallCavesVisited: Int): List[String] = {
+      if (nodes.isEmpty) roads
       else if (nodes.head == "end") {
         //println(s"END ${road.reverse.map(t => s"${t._1}->${t._2}").mkString("-")}");
         findEnd(currentNode, nodes.tail, road
-          , s"${road.reverse.map(t => {t._1}).mkString(",")}" :: roads, s"after end & $index")
+          , s"${(("end", "-") :: (currentNode, "end") :: road).reverse.map(t => {t._1}).mkString(",")}" :: roads, smallCavesVisited)
       } else {
         val segment = (currentNode,nodes.head)
-        if (nodes.head.toLowerCase() == nodes.head && road.exists(t => t._1 == nodes.head)
-          || road.exists(t => t == segment))
-          findEnd(currentNode, nodes.tail, road, roads, s"exists & $index")
+        val left = smallCavesVisited - (if (nodes.head == "start") (1+smallCavesVisited)
+          else
+            if (nodes.head.toLowerCase() == nodes.head) road.count(t => t._1 == nodes.head)
+            else 0)
+        if (left < 0)
+          findEnd(currentNode, nodes.tail, road, roads, smallCavesVisited)
         else {
             findEnd(currentNode, nodes.tail, road,
               findEnd(nodes.head, caves(nodes.head), segment :: road
-                , roads, s"cave in & ${index+1}"), s" tail & ${index}")
+                , roads, left), smallCavesVisited)
         }
       }
     }
-    val wayz = findEnd("start", caves("start"), List[(String,String)](), List[String](), "start & 0")
+    val wayz = findEnd("start", caves("start"), List[(String,String)](), List[String](), 1)
     //println(wayz.mkString("\n"))
     (wayz.size.toString, "part2")
   }
@@ -90,8 +91,8 @@ val test2 = """dc-end
               |zg-he
               |pj-fs
               |start-RW""".stripMargin.split("\n")
-  //println(run(test1.toList))
-  //println(run(test2.toList))
-  //println("t3: " + run(test3.toList))
+  println(run(test1.toList))
+  println(run(test2.toList))
+  println("t3: " + run(test3.toList))
   println(run(array.toList))
 }

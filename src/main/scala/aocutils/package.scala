@@ -4,6 +4,12 @@ package object aocutils {
     def apply(xStr: String, yStr: String): Point = {
       Point(xStr.toInt, yStr.toInt)
     }
+    def getAllDeltas(): List[Point] ={
+      List(Point(1, 0), Point(1, 1), Point(0, 1), Point(-1, 1), Point(-1, 0), Point(-1, -1), Point(0, -1), Point(1, -1))
+    }
+    def SquaredPoints(): List[Point] = {
+      List(Point(1, 0), Point(-1, 0), Point(0, -1), Point(0, 1))
+    }
   }
   case class Line(s: Point, e: Point)
   case class Point(val x: Int, y: Int) {

@@ -23,18 +23,18 @@ object Day09 extends App {
       deltas.flatMap(d => scan(array(p.y)(p.x), p + d, basin+p)).toSet
   }
 
-  var result=0
-  var lengths = ListBuffer[Int]()
+  var part1 = 0
+  var part2 = ListBuffer[Int]()
   //println(s"bound $boundary")
   for (x <- 0 to boundary.x;y <- 0 to boundary.y) {
     var f = array(y)(x).toInt
     if ((x <= 0 || array(y)(x-1).toInt > f) && (x >= boundary.x ||array(y)(x+1).toInt > f)
       && (y <= 0 || array(y-1)(x).toInt > f) && (y >= boundary.y || array(y+1)(x).toInt > f)) {
-      result = result + f.toInt + 1;
+      part1 = part1 + f.toInt + 1;
       val basin = scan(f, Point(x,y), Set[Point]())
-      lengths += basin.size
+      part2 += basin.size
     }
   }
-  println(s"part 1: $result")
-  println(s"part2 ${lengths.sorted.takeRight(3).product}")
+  println(s"part 1: $part1")
+  println(s"part2 ${part2.sorted.takeRight(3).product}")
 }
