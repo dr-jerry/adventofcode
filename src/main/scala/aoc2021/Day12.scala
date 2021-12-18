@@ -48,9 +48,10 @@ object Day12 extends App {
         }
       }
     }
-    val wayz = findEnd("start", caves("start"), List[(String,String)](), List[String](), 1)
+    val wayz = findEnd("start", caves("start"), List[(String,String)](), List[String](), 0)
     //println(wayz.mkString("\n"))
-    (wayz.size.toString, "part2")
+    ("part1: " + wayz.size.toString
+      , "part2: " + findEnd("start", caves("start"), List[(String,String)](), List[String](), 1).size.toString)
   }
 
 val test1 = """start-A
