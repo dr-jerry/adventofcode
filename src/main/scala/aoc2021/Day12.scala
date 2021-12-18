@@ -24,48 +24,32 @@ object Day12 extends App {
 
     val caves: Map[String, Set[String]] = parsePairs(array, Map[String, Set[String]]())
     println(s"caves $caves")
+    val tp = "(.*) & (\\d+)".r
 
-    def findEnd(currentNode: String, nodes: Set[String], road: List[(String, String)], roads: List[String]): List[String] = {
-      println(s"current $currentNode + $nodes and road ${road.map(t => s"${t._1}->${t._2}").mkString("-")}")
-      if (nodes.isEmpty) roads
-      else if (nodes.head == "end") findEnd(nodes.head, nodes.tail, road
-        , road.appended((currentNode, nodes.head)).mkString("-") :: roads)
-      else {
+    def findEnd(currentNode: String, nodes: Set[String], road: List[(String, String)], roads: List[String], trace: String): List[String] = {
+      val tp(tr,ind) = trace
+      val index = ind.toInt
+      //println(s"$tr,$index size ${roads.size}  current $currentNode + $nodes\n and roads ${roads.mkString("\n")}")
+      if (nodes.isEmpty) {/* println(s"out $trace & $index and roads: ${roads.mkString("\n")}");*/ roads}
+      else if (nodes.head == "end") {
+        //println(s"END ${road.reverse.map(t => s"${t._1}->${t._2}").mkString("-")}");
+        findEnd(currentNode, nodes.tail, road
+          , s"${road.reverse.map(t => {t._1}).mkString(",")}" :: roads, s"after end & $index")
+      } else {
         val segment = (currentNode,nodes.head)
-        println()
         if (nodes.head.toLowerCase() == nodes.head && road.exists(t => t._1 == nodes.head)
           || road.exists(t => t == segment))
-          findEnd(nodes.head, nodes.tail, road, roads)
-        else findEnd(nodes.head, caves(nodes.head), road.appended(segment), roads) :::
-          findEnd(currentNode, nodes.tail, road.appended(segment), roads)
+          findEnd(currentNode, nodes.tail, road, roads, s"exists & $index")
+        else {
+            findEnd(currentNode, nodes.tail, road,
+              findEnd(nodes.head, caves(nodes.head), segment :: road
+                , roads, s"cave in & ${index+1}"), s" tail & ${index}")
+        }
       }
     }
-//      else if (currentNode == "end") {
-//        println(s"found!! $road + $roads")
-//        findEnd(currentNode, nodes.tail, road.tail, roads :+ road.mkString(","))
-//      } else {
-//        val segment = s"'$currentNode'-'${nodes.head}'"
-////        println(s"1      (${currentNode == "start" && !road.isEmpty}) 2:${nodes.isEmpty}\n"
-////         + s" 3 ${currentNode.toLowerCase == currentNode && road.mkString("").contains(currentNode)}"
-////         + s" 4 ${road.mkString("").contains(segment)}\n"
-////         + s"5 ${road.contains(segment)}")
-//
-//        if ((currentNode == "start" && !road.isEmpty) || nodes.isEmpty
-//          || currentNode.toLowerCase == currentNode && road.mkString("").contains(currentNode)
-//          || road.mkString("").contains(segment)
-//          || road.contains(segment)) {
-//          //println("not joinging")
-//          findEnd(nodes.head, nodes.tail, road, roads)
-//
-//        } else {
-//          println("joining")
-//          findEnd(nodes.head, caves(nodes.head), road.appended(segment), roads) :::
-//            findEnd(currentNode, nodes.tail, road.appended(segment), roads)
-//        }
-//      }
-//    }
-
-    (findEnd("start", caves("start"), List[(String,String)](), List[String]()).size.toString, "two")
+    val wayz = findEnd("start", caves("start"), List[(String,String)](), List[String](), "start & 0")
+    //println(wayz.mkString("\n"))
+    (wayz.size.toString, "part2")
   }
 
 val test1 = """start-A
@@ -76,7 +60,38 @@ val test1 = """start-A
     |A-end
     |b-end
     |""".stripMargin.split("\n")
+val test2 = """dc-end
+    |HN-start
+    |start-kj
+    |dc-start
+    |dc-HN
+    |LN-dc
+    |HN-end
+    |kj-sa
+    |kj-HN
+    |kj-dc
+    |""".stripMargin.split("\n")
 
-  println(run(test1.toList))
-  //println(run(array.toList))
+  val test3="""fs-end
+              |he-DX
+              |fs-he
+              |start-DX
+              |pj-DX
+              |end-zg
+              |zg-sl
+              |zg-pj
+              |pj-he
+              |RW-he
+              |fs-DX
+              |pj-RW
+              |zg-RW
+              |start-pj
+              |he-WI
+              |zg-he
+              |pj-fs
+              |start-RW""".stripMargin.split("\n")
+  //println(run(test1.toList))
+  //println(run(test2.toList))
+  //println("t3: " + run(test3.toList))
+  println(run(array.toList))
 }
