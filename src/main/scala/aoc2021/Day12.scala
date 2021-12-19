@@ -7,51 +7,46 @@ import scala.io.Source
 object Day12 extends App {
   var array = Source.fromInputStream(this.getClass.getResourceAsStream( "day12.txt")).getLines()
   def run(array: List[String]): (String, String) = {
-    val pattern = "(.*)\\-(.*)".r
 
     //var caves = Map[String, Set[String]]()
-    // build a Map String -> Set
+    // build a double Map a->b a-> +b , b-> +a
+    val pattern = "(.*)\\-(.*)".r
     def parsePairs(list: List[String], map: Map[String, Set[String]]): Map[String, Set[String]] = {
       if (list.isEmpty) map
       else {
         val pattern(a, b) = list.head
-        //          val s: Set[String] =
-        //          val m: Map[String, Set[String]] =
-
-        parsePairs(list.tail, map + (a -> (map.getOrElse(a, Set()) + b), b -> (map.getOrElse(b, Set()) + a)))
+         parsePairs(list.tail, map + (a -> (map.getOrElse(a, Set()) + b), b -> (map.getOrElse(b, Set()) + a)))
       }
     }
 
     val caves: Map[String, Set[String]] = parsePairs(array, Map[String, Set[String]]())
     println(s"caves $caves")
-    val tp = "(.*) & (\\d+)".r
 
     def findEnd(currentNode: String, nodes: Set[String]
-                , road: List[(String, String)], roads: List[String], smallCavesVisited: Int): List[String] = {
+                , road: List[String], roads: List[String], smallCavesVisited: Int): List[String] = {
       if (nodes.isEmpty) roads
       else if (nodes.head == "end") {
-        //println(s"END ${road.reverse.map(t => s"${t._1}->${t._2}").mkString("-")}");
         findEnd(currentNode, nodes.tail, road
-          , s"${(("end", "-") :: (currentNode, "end") :: road).reverse.map(t => {t._1}).mkString(",")}" :: roads, smallCavesVisited)
+          , s"${(("end", "-") :: (currentNode, "end") :: road).reverse.mkString(",")}" :: roads, smallCavesVisited)
       } else {
-        val segment = (currentNode,nodes.head)
+ //       val segment = (currentNode,nodes.head)
         val left = smallCavesVisited - (if (nodes.head == "start") (1+smallCavesVisited)
           else
-            if (nodes.head.toLowerCase() == nodes.head) road.count(t => t._1 == nodes.head)
+            if (nodes.head.toLowerCase() == nodes.head) road.count(nd => nd == nodes.head)
             else 0)
         if (left < 0)
           findEnd(currentNode, nodes.tail, road, roads, smallCavesVisited)
         else {
             findEnd(currentNode, nodes.tail, road,
-              findEnd(nodes.head, caves(nodes.head), segment :: road
+              findEnd(nodes.head, caves(nodes.head), currentNode :: road
                 , roads, left), smallCavesVisited)
         }
       }
     }
-    val wayz = findEnd("start", caves("start"), List[(String,String)](), List[String](), 0)
+    val wayz = findEnd("start", caves("start"), List[String](), List[String](), 0)
     //println(wayz.mkString("\n"))
     ("part1: " + wayz.size.toString
-      , "part2: " + findEnd("start", caves("start"), List[(String,String)](), List[String](), 1).size.toString)
+      , "part2: " + findEnd("start", caves("start"), List[String](), List[String](), 1).size.toString)
   }
 
 val test1 = """start-A
