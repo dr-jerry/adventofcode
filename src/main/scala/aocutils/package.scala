@@ -1,6 +1,11 @@
 package object aocutils {
   // Points, coordinates.
   object Point {
+    val commaPattern= "(\\d+) ?, ?(\\d+)".r
+    def apply(str: String): Point = {
+      val commaPattern(x,y) = str
+      Point(x.toInt,y.toInt)
+    }
     def apply(xStr: String, yStr: String): Point = {
       Point(xStr.toInt, yStr.toInt)
     }
@@ -19,6 +24,9 @@ package object aocutils {
     def -(coor: Point): Point = {
       //    println(s"minning this $this, that: $coor")
       Point(x - coor.x, y - coor.y)
+    }
+    def * (v: Int): Point = {
+      Point(v*x, v*y)
     }
     // return if this in boundary.
     def in(boundary: Point): Boolean = {
