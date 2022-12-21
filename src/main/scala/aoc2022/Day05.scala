@@ -9,7 +9,7 @@ object Day05 extends App {
   // first get out stacks.
   val staks = array.filter(line => line.indexOf("[") != -1).reverse
   // its reversed so the longest line is at top
-  val max = staks.head.size
+  val max = staks.map(line => line.size).max
   // make all rows are equal length, transpose, select the propriate lines
   val stacks = staks.map(l => l.padTo(max, ' ')).transpose.tail.sliding(1,4)
     .map(_.head.reverse.mkString.trim).toArray
