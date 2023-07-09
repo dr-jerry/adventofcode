@@ -3,4 +3,4 @@
 \#*\#
 /project/
 /target/
-sessionID
+src/main/resources/aocutils/sessionID
