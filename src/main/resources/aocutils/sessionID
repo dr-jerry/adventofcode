@@ -1,0 +1,1 @@
+session=a 128 char sized hex string retrieved from a signed in browser session no semicolon at end.

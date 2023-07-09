@@ -30,6 +30,7 @@ package object aocutils {
   }
   def getFromAOC(year: Int, day: Int): String = {
     val cookieContents = Source.fromInputStream(this.getClass.getResourceAsStream("sessionID")).getLines().toList(0)
+    println(s"cookieContents is $cookieContents")
     val client: Service[Request, Response] = Http.client.withTlsWithoutValidation.newService("www.adventofcode.com:443")
 
     val request = Request(Method.Get, s"https://adventofcode/$year/day/$day/input")
@@ -109,5 +110,66 @@ package object aocutils {
       (this - that + Point(1, 1)).in(Point(2, 2))
     }
   }
+
+  import scala.math._
+
+  case class Complex(re: Double, im: Double) extends Ordered[Complex] {
+    private val modulus = sqrt(pow(re, 2) + pow(im, 2))
+
+    def isImag = im != 0
+    // Constructors
+    def this(re: Double) = this(re, 0)
+
+    // Unary operators
+    def unary_+ = this
+
+    def unary_- = new Complex(-re, -im)
+
+    def unary_~ = new Complex(re, -im) // conjugate
+
+    def unary_! = modulus
+
+    // Comparison
+    def compare(that: Complex) = !this compare !that
+
+    // Arithmetic operations
+    def +(c: Complex) = new Complex(re + c.re, im + c.im)
+
+    def -(c: Complex) = this + -c
+
+    def *(c: Complex) =
+      new Complex(re * c.re - im * c.im, im * c.re + re * c.im)
+
+    def /(c: Complex) = {
+      require(c.re != 0 || c.im != 0)
+      val d = pow(c.re, 2) + pow(c.im, 2)
+      new Complex((re * c.re + im * c.im) / d, (im * c.re - re * c.im) / d)
+    }
+
+
+    private def asString =
+      re + (if (im < 0) "-" + -im else "+" + im) + "*i"
+  }
+
+  object Complex {
+    // Constants
+    val i = new Complex(0, 1)
+
+    // Factory methods
+    def apply(re: Double) = new Complex(re)
+
+    // Implicit conversions
+    implicit def fromDouble(d: Double) = new Complex(d)
+
+    implicit def fromFloat(f: Float) = new Complex(f)
+
+    implicit def fromLong(l: Long) = new Complex(l)
+
+    implicit def fromInt(i: Int) = new Complex(i)
+
+    implicit def fromShort(s: Short) = new Complex(s)
+  }
+
+  import Complex._
 
 }
