@@ -6,8 +6,8 @@ import scala.collection.mutable
 import scala.io.Source
 
 object Day12 extends App {
-  val test = Source.fromInputStream(this.getClass.getResourceAsStream("day12r.txt")).getLines().toList
-  //val real = aocutils.getFromAOC(2022,12).split("\n").toList
+  //val test = Source.fromInputStream(this.getClass.getResourceAsStream("day12r.txt")).getLines().toList
+  val lines = aocutils.getFromAOC(2022,12).split("\n").toList
 
   var start, end = Point(1,1)
   def parse(lines: Seq[String]): Map[Point, Char] = {
@@ -71,6 +71,6 @@ object Day12 extends App {
     println(s"2) cost is $cost")
   }
   //println(s"in test ${Point(0,5).in}")
-  part1(test)
-  part2(test)
+  part1(lines)
+  part2(lines)
 }

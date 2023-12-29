@@ -4,3 +4,4 @@
 /project/
 /target/
 src/main/resources/aocutils/sessionID
+.DS_Store

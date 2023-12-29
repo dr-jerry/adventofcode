@@ -3,20 +3,31 @@ import scala.io.Source
 
 object Day02 extends App {
 
-  val nrs = Map[String,Int]("1"->1, "2"->2, "3"->3, "4"->4, "5"->5, "6"->6, "7"->7, "8"->8, "9"->9
-    , "one"->1, "two"->2, "three"->3, "four"->4, "five"->5, "six"->6, "seven"->7, "eight"->8,"nine"->9)
+  val bag = Map("red"  -> 12, "green" -> 13, "blue" -> 14)
   def part1(list: List[String]): Long = {
-    list.foreach(s => {
-      val "Game $id: $contents" = s
-      println(id)
-  })
-    0L
+    var result = 0L
+    val parsed = list.map(s => {
+      val s"Game $id: $contents" = s
+      (id.toInt,contents.split("[;,]").exists(line => {
+        val s"$count $color" = line.trim
+        bag.get(color).get < count.toInt}))})
+    parsed.filter(t => !t._2).map(t => t._1).sum
   }
 
+  def part2(list: List[String]): Long = {
+    list.map(s => {
+      val s"Game $id: $contents" = s
+      contents.split("[;,]").map(str => {val s"$count $color" = str.trim;
+        (color, count.toLong)}).foldLeft(Map("red"  -> 0L, "green" -> 0L, "blue" -> 0L)){(map, tup) =>
+        if (map.get(tup._1).get < tup._2) map ++ Map(tup._1 -> tup._2) else map}})
+      .map(mp => mp.values.product).sum
+    }
 
   val real = Source.fromInputStream(this.getClass.getResourceAsStream("day02.txt")).getLines().toList
-  part1(real)
-  //val real = aocutils.getFromAOC(2023, 1).split("\n").toList
+  //val real = aocutils.getFromAOC(2023, 2).split("\n").toList
+  println("part1: " + part1(real))
+  println("part2: " + part2(real))
+  //
   //println(s"outcome = ${real.map(l => toNum(l)).sum}")
   //println(s"2 outcome = ${part2(real)}")
 

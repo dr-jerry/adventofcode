@@ -7,7 +7,7 @@ import scala.io.Source
 
 object Day21 extends App {
 
-//  val lines = Source.fromInputStream(this.getClass.getResourceAsStream("day21.txt")).getLines().toList
+//  val lines = Source.fromInputStream(this.getClass.getResourceAsStream("day21.txt")).getLines().toList//
   val lines = aocutils.getFromAOC(2022,21).split("\n").toList
   //println(lines)
 
@@ -23,17 +23,19 @@ object Day21 extends App {
 
 
   def part1(yells: Map[String, String], key: String): Long = {
-    yells(key) match {
-      case numberPat(nr) => nr.toLong
-      case exprPat(v1, op, v2) => {
-        op match {
-          case "+" => part1(yells, v1) + part1(yells, v2)
-          case "-" => part1(yells, v1) - part1(yells, v2)
-          case "*" => part1(yells, v1) * part1(yells, v2)
-          case "/" => part1(yells, v1) / part1(yells, v2)
-        }
-      }
-    }
+   val result : Long = yells(key) match {
+     case numberPat(nr) => nr.toLong
+     case exprPat(v1, op, v2) => {
+       op match {
+         case "+" => part1(yells, v1) + part1(yells, v2)
+         case "-" => part1(yells, v1) - part1(yells, v2)
+         case "*" => part1(yells, v1) * part1(yells, v2)
+         case "/" => part1(yells, v1) / part1(yells, v2)
+       }
+     }
+   }
+    println(s"yells($key) is ${yells(key)}: $result")
+    result
   }
 
   def part2(yells: Map[String, String], key: String): Unit = {
@@ -61,7 +63,7 @@ object Day21 extends App {
         }
       }
     }
-    println("result is" + result)
+    println(s"$key -> ${yells(key)} -> $result is")
     result
   }
 
@@ -82,7 +84,7 @@ object Day21 extends App {
   }
 
   println(s"part1 is ${part1(toMap(lines), "root")}")
-  part2(toMap(lines), "root")
-  part2Complex(toMap(lines), "root")
+  //part2(toMap(lines), "root")
+  //part2Complex(toMap(lines), "root")
 
 }
